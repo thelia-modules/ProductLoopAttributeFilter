@@ -1,0 +1,11 @@
+{
+  "name": "thelia/product-loop-attribute-filter-module",
+  "license": "MIT",
+  "type": "thelia-module",
+  "require": {
+    "thelia/installer": "~1.1"
+  },
+  "extra": {
+    "installer-name": "ProductLoopAttributeFilter"
+  }
+}
