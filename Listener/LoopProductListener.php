@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Thelia package.
+ * http://www.thelia.net
+ *
+ * (c) OpenStudio <info@thelia.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace ProductLoopAttributeFilter\Listener;
 
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -13,7 +23,7 @@ use Thelia\Model\ProductQuery;
 class LoopProductListener implements EventSubscriberInterface
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
@@ -25,11 +35,11 @@ class LoopProductListener implements EventSubscriberInterface
             TheliaEvents::getLoopExtendsEvent(
                 TheliaEvents::LOOP_EXTENDS_BUILD_MODEL_CRITERIA,
                 'product'
-            ) => ['productBuildModelCriteria', 128]
+            ) => ['productBuildModelCriteria', 128],
         ];
     }
 
-    public function productArgDefinitions(LoopExtendsArgDefinitionsEvent $event)
+    public function productArgDefinitions(LoopExtendsArgDefinitionsEvent $event): void
     {
         $argument = $event->getArgumentCollection();
 
@@ -40,7 +50,7 @@ class LoopProductListener implements EventSubscriberInterface
         $argument->addArgument(Argument::createIntTypeArgument('attribute_min_stock', null));
     }
 
-    public function productBuildModelCriteria(LoopExtendsBuildModelCriteriaEvent $event)
+    public function productBuildModelCriteria(LoopExtendsBuildModelCriteriaEvent $event): void
     {
         if ($event->getLoop()->getAttributeExtend()) {
             if (null !== $attributeAvailability = $event->getLoop()->getAttributeAvailability()) {
@@ -49,7 +59,7 @@ class LoopProductListener implements EventSubscriberInterface
         }
     }
 
-    protected function manageAttributeAvailability(LoopExtendsBuildModelCriteriaEvent $event, array $attributeAvailability)
+    protected function manageAttributeAvailability(LoopExtendsBuildModelCriteriaEvent $event, array $attributeAvailability): void
     {
         /** @var ProductQuery $query */
         $query = $event->getModelCriteria();
@@ -61,9 +71,9 @@ class LoopProductListener implements EventSubscriberInterface
             $useProductSaleElementsQuery->filterByQuantity($minStock, Criteria::GREATER_EQUAL);
         }
 
-            $useProductSaleElementsQuery->useAttributeCombinationQuery('attribute_extend', Criteria::INNER_JOIN)
-                ->filterByAttributeAvId($attributeAvailability, Criteria::IN)
-            ->endUse()
+        $useProductSaleElementsQuery->useAttributeCombinationQuery('attribute_extend', Criteria::INNER_JOIN)
+            ->filterByAttributeAvId($attributeAvailability, Criteria::IN)
+        ->endUse()
         ->endUse();
     }
 }
